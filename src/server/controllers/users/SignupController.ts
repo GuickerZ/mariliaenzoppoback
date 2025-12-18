@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 import { AppDataSource } from '../../database/data-source';
 import { User } from '../../database/entities/User.entity';
 import { JWTService } from '../../shared/services/JWTService';
@@ -28,7 +28,7 @@ export const SignupController = {
 
       const username = generateRandomUsername();
       const name = `Anonimo${username.slice(7)}`;
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcryptjs.hash(password, 10);
 
       const novoUsuario = usuarioRepo.create({
         email,
