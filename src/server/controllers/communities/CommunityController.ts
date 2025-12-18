@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { CommunityDAO } from 'Src/server/DAO/CommunityDAO';
-import { PostDAO } from 'Src/server/DAO/PostDAO';
-import { DiscussionDAO } from 'Src/server/DAO/DiscussionDAO';
+import { CommunityDAO } from '../../DAO/CommunityDAO';
+import { PostDAO } from '../../DAO/PostDAO';
+import { DiscussionDAO } from '../../DAO/DiscussionDAO';
 
 export class CommunityController {
   public static async create(req: Request, res: Response) {

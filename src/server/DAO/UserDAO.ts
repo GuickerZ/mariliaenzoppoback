@@ -1,5 +1,5 @@
-import { AppDataSource } from "Src/server/database/data-source";
-import { User } from "Src/server/database/entities/User.entity";
+import { AppDataSource } from "../database/data-source";
+import { User } from "../database/entities/User.entity";
 import { PasswordCrypto } from "../shared/services";
 
 const userRepository = AppDataSource.getRepository(User);

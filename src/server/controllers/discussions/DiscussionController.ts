@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { DiscussionDAO } from 'Src/server/DAO/DiscussionDAO';
+import { DiscussionDAO } from '../../DAO/DiscussionDAO';
 
 export class DiscussionController {
   public static async create(req: Request, res: Response) {

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { PostDAO } from 'Src/server/DAO/PostDAO';
+import { PostDAO } from '../../DAO/PostDAO';
 
 export class PostController {
   public static async create(req: Request, res: Response) {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { PostDAO } from 'Src/server/DAO/PostDAO';
-import { CommunityDAO } from 'Src/server/DAO/CommunityDAO';
-import { DiscussionDAO } from 'Src/server/DAO/DiscussionDAO';
+import { PostDAO } from '../../DAO/PostDAO';
+import { CommunityDAO } from '../../DAO/CommunityDAO';
+import { DiscussionDAO } from '../../DAO/DiscussionDAO';
 
 function calcConsecutiveStreak(dates: Date[]): number {
   if (!dates.length) return 0;

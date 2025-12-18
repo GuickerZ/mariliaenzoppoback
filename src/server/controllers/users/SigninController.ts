@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { UserDAO } from 'Src/server/DAO/UserDAO';
-import { User } from 'Src/server/database/entities/User.entity';
-import { UnauthorizedError } from 'Src/server/helpers/Errors/UnauthorizedError';
-import { validation } from 'Src/server/shared/middlewares/Validation';
-import { JWTService } from 'Src/server/shared/services/JWTService';
-import { PasswordCrypto } from 'Src/server/shared/services/PasswordCrypto';
+import { UserDAO } from '../../DAO/UserDAO';
+import { User } from '../../database/entities/User.entity';
+import { UnauthorizedError } from '../../helpers/Errors/UnauthorizedError';
+import { validation } from '../../shared/middlewares/Validation';
+import { JWTService } from '../../shared/services/JWTService';
+import { PasswordCrypto } from '../../shared/services/PasswordCrypto';
 import * as yup from 'yup';
 
 interface IBodyProps extends Omit<User, 'id' | 'isActive' | 'username' | 'name' | 'posts'> { }
