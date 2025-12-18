@@ -1,60 +1,71 @@
-// Primeiro, vamos testar se o básico funciona
 console.log('🚀 Iniciando aplicação...');
 
 import 'reflect-metadata';
-console.log('✅ reflect-metadata carregado');
-
 import 'dotenv/config';
-console.log('✅ dotenv carregado');
+import "express-async-errors";
 
-// Log das variáveis de ambiente
-console.log('🔧 Variáveis de ambiente:');
-console.log('- DB_HOST:', process.env.DB_HOST || 'NÃO DEFINIDO');
-console.log('- DB_PORT:', process.env.DB_PORT || 'NÃO DEFINIDO');
-console.log('- DB_USER:', process.env.DB_USER || 'NÃO DEFINIDO');
-console.log('- DB_NAME:', process.env.DB_NAME || 'NÃO DEFINIDO');
-console.log('- JWT_SECRET:', process.env.JWT_SECRET ? 'DEFINIDO' : 'NÃO DEFINIDO');
+console.log('✅ Dependências básicas carregadas');
 
-import express from 'express';
-console.log('✅ express carregado');
+import { server } from './server/Server';
+import { AppDataSource } from './server/database/data-source';
 
-import cors from 'cors';
-console.log('✅ cors carregado');
+console.log('✅ Server e DataSource importados');
 
-// Criar app Express simples primeiro
-const app = express();
+// Inicialização do banco de dados
+let dbInitialized = false;
 
-app.use(cors({ origin: '*' }));
-app.use(express.json());
-
-// Rota de teste básica
-app.get('/', (req, res) => {
-  res.json({ message: 'API Running!', timestamp: new Date().toISOString() });
-});
-
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
-    timestamp: new Date().toISOString(),
-    env: {
-      DB_HOST: process.env.DB_HOST ? 'SET' : 'NOT SET',
-      DB_USER: process.env.DB_USER ? 'SET' : 'NOT SET',
-      JWT_SECRET: process.env.JWT_SECRET ? 'SET' : 'NOT SET',
-    }
-  });
-});
+const initializeDatabase = async () => {
+  if (dbInitialized || AppDataSource.isInitialized) {
+    console.log('📦 Banco já inicializado');
+    return;
+  }
+  
+  try {
+    console.log('🔄 Conectando ao banco de dados...');
+    await AppDataSource.initialize();
+    console.log('✅ Banco de dados conectado!');
+    dbInitialized = true;
+  } catch (error: any) {
+    console.error('❌ Erro ao conectar ao banco:', error.message);
+    throw error;
+  }
+};
 
 // Handler para Vercel
-const handler = (req: any, res: any) => {
-  console.log(`📥 ${req.method} ${req.url}`);
-  return app(req, res);
+const handler = async (req: any, res: any) => {
+  // Headers CORS
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, idUsuario');
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  try {
+    await initializeDatabase();
+    return server(req, res);
+  } catch (error: any) {
+    console.error('❌ Erro no handler:', error);
+    res.status(500).json({ 
+      error: 'Erro interno do servidor',
+      message: error.message
+    });
+  }
 };
 
 // Para desenvolvimento local
 if (!process.env.VERCEL) {
-  const PORT = process.env.PORT || 3333;
-  app.listen(PORT, () => {
-    console.log(`🚀 Servidor rodando na porta ${PORT}`);
+  initializeDatabase().then(() => {
+    const PORT = process.env.PORT || 3333;
+    server.listen(PORT, () => {
+      console.log(`🚀 Servidor rodando na porta ${PORT}`);
+    });
+  }).catch(err => {
+    console.error('❌ Falha ao iniciar:', err);
+    process.exit(1);
   });
 }
 
