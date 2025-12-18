@@ -6,12 +6,40 @@ import { server } from './server/Server';
 import { AppDataSource } from './server/database/data-source';
 
 let dbInitialized = false;
+let connectionPromise: Promise<void> | null = null;
 
-const initializeDatabase = async () => {
-  if (dbInitialized || AppDataSource.isInitialized) return;
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+const initializeDatabase = async (retries = 3): Promise<void> => {
+  if (dbInitialized && AppDataSource.isInitialized) return;
   
-  await AppDataSource.initialize();
-  dbInitialized = true;
+  // Evita múltiplas inicializações simultâneas
+  if (connectionPromise) return connectionPromise;
+  
+  connectionPromise = (async () => {
+    for (let i = 0; i < retries; i++) {
+      try {
+        if (!AppDataSource.isInitialized) {
+          await AppDataSource.initialize();
+        }
+        dbInitialized = true;
+        return;
+      } catch (error: any) {
+        console.error(`DB connection attempt ${i + 1} failed:`, error.message);
+        if (i < retries - 1) {
+          await sleep(1000 * (i + 1)); // Backoff: 1s, 2s, 3s
+        } else {
+          throw error;
+        }
+      }
+    }
+  })();
+  
+  try {
+    await connectionPromise;
+  } finally {
+    connectionPromise = null;
+  }
 };
 
 // Handler para Vercel (serverless)
