@@ -65,6 +65,24 @@ const handler = async (req: any, res: any) => {
   }
 };
 
+// Graceful shutdown - fecha conexões ao reiniciar
+const gracefulShutdown = async (signal: string) => {
+  console.log(`\n${signal} received. Closing database connections...`);
+  try {
+    if (AppDataSource.isInitialized) {
+      await AppDataSource.destroy();
+      console.log('Database connections closed.');
+    }
+  } catch (error) {
+    console.error('Error closing database:', error);
+  }
+  process.exit(0);
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGUSR2', () => gracefulShutdown('SIGUSR2')); // nodemon restart
+
 // Desenvolvimento local
 if (!process.env.VERCEL) {
   const PORT = process.env.PORT || 3333;
