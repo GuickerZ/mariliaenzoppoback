@@ -51,8 +51,7 @@ export const SignupController = {
         },
         accessToken,
       });
-    } catch (error) {
-      console.error("Erro ao cadastrar usuário:", error);
+    } catch {
       return res.status(500).json({ error: "Erro interno no servidor." });
     }
   },

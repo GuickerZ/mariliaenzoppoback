@@ -1,6 +1,6 @@
-# Off - Backend API
+# OFF - Backend API
 
-API REST para a rede social antidependência Off.
+API REST para a rede social antidependência OFF.
 
 ## Tecnologias
 

@@ -5,7 +5,7 @@
   "author": "Marília Marques",
   "license": "MIT",
   "private": false,
-  "description": "Off - Rede Social Antidependência - Backend API",
+  "description": "OFF - Rede Social Antidependência - Backend API",
   "scripts": {
     "start:dev": "ts-node -r tsconfig-paths/register ./src/index.ts",
     "start": "ts-node ./src/index.ts",
