@@ -24,6 +24,11 @@ const AppDataSource = new DataSource({
   synchronize: true,
   logging: process.env.NODE_ENV === "development",
   entities: [User, Post, Community, Discussion],
+  extra: {
+    max: 5,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
+  },
 });
 
 export { AppDataSource };
