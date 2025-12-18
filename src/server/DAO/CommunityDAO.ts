@@ -86,6 +86,17 @@ export const CommunityDAO = {
       .getCount();
   },
 
+  listByMemberId: async (userId: number) => {
+    // list communities where user is a member
+    return await AppDataSource.getRepository(Community)
+      .createQueryBuilder('community')
+      .leftJoin('community.members', 'member')
+      .where('member.id = :userId', { userId })
+      .select(['community.id', 'community.name'])
+      .orderBy('community.name', 'ASC')
+      .getMany();
+  },
+
   getDetailsWithDiscussions: async (communityId: number, userId?: number) => {
     const communityRepo = AppDataSource.getRepository(Community);
 

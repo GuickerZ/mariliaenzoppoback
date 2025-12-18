@@ -39,6 +39,7 @@ router.get('/communities/:id', ensureAuthenticated, asyncHandler(CommunityContro
 router.get('/me/stats', ensureAuthenticated, asyncHandler(StatsController.me));
 router.get('/me/activity/weekly', ensureAuthenticated, asyncHandler(StatsController.weeklyActivity));
 router.get('/me/insights', ensureAuthenticated, asyncHandler(StatsController.insights));
+router.get('/me/communities', ensureAuthenticated, asyncHandler(StatsController.myCommunities));
 
 // Discussions (single level under post root)
 router.get('/posts/:postId/discussions', asyncHandler(DiscussionController.list));

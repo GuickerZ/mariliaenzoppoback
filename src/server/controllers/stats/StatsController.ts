@@ -105,4 +105,12 @@ export class StatsController {
       discussionsStarted: 0,
     });
   }
+
+  public static async myCommunities(req: Request, res: Response) {
+    const userId = Number(req.headers["idUsuario"]);
+
+    const communities = await CommunityDAO.listByMemberId(userId);
+
+    return res.status(200).json(communities);
+  }
 }
